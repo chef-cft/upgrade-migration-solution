@@ -2,7 +2,12 @@
 
 require 'chef'
 
-Chef::Config.from_file("c:/Users/conobcu/.chef/knife.rb")
+def determine_knife_loc
+  return ARGV[0] unless ARGV.empty?
+  return "#{ENV['HOME']}/.chef/knife.rb" if ARGV.empty?
+end
+
+Chef::Config.from_file(determine_knife_loc)
 rest = Chef::ServerAPI.new(Chef::Config[:chef_server_url])
 nodes = Chef::Search::Query.new(Chef::Config[:chef_server_url]).search(:node, '*:*', rows: 5000, :filter_result => { 'version' => ['chef_packages','chef', 'version'], 'os' => ['platform'], 'os_version' =>['platform_version']} ).first
 
