@@ -34,3 +34,24 @@ nil: {"nil"=>41, "redhat_7.2"=>5}
 - If any of those run_list combos have a node on the server running Chef 15+ then skip it since we know it works on a modern Infra Client
 - For each run list combination download all the cookbooks in that run list from the server into unique directories on the local host
 - Run cookstyle / foodcritic against those directories alerting on just the deprecation rules. Create a report of code changes that will need to be made per run list combination
+
+
+## Comparison - Chef Infra | Effortless
+
+|Feature|Chef Infra|Effortless|
+|-------|----------|----------|
+|**chef-client upgrade**|[Chef Client Updater Cookbook](https://github.com/chef-cookbooks/chef_client_updater)|[chef/chef-client Hab Package](https://bldr.habitat.sh/#/pkgs/chef/chef-client/latest)|
+|**Organizations**|[Chef Server Orgs](https://docs.chef.io/server_orgs.html)|[Habitat Origins](https://www.habitat.sh/docs/using-builder/#builder-origin)|
+|**Environments**|[Chef Environments](https://docs.chef.io/environments.html)|[Habitat Channels](https://www.habitat.sh/docs/using-habitat/#continuous-deployment-using-channels)|
+|**Roles**|stored in `*.json`, hosted in Chef Infra Server|*see "Role Cookbooks"|
+|**Role Cookbooks**|[Role Cookbook Model](https://github.com/chef-cft/chef-examples/blob/master/examples/RoleCookbookModel.md)|Roles and Role Cookbooks will migrate to a [Habitat Channel](https://www.habitat.sh/docs/using-habitat/#continuous-deployment-using-channels) for each unique endpoint|
+|**Data Bags**|stored in `*.json`, hosted in Chef Infra Server||
+|**Environment-level Attributes**|stored in `*.json`, hosted in Chef Infra Server||
+|**Environment Conditionals**|[`case node.chef_environment`](https://stackoverflow.com/questions/19638372/is-it-possible-to-get-current-environment-in-the-attribute-files)||
+|**Knife Commands**|||
+||`ssh`|no equivalent + not recommended|
+||`search`|[Visibility in Automate](https://automate.chef.io/)|
+||`node`|[Visibility in Automate](https://automate.chef.io/)|
+||`vault`|we recommend using an application specifically focused on secrets management|
+|**Application Orchestration**|combination of bespoke pipelines, `knife` commands, and other methods to get Chef Infra to converge changes in a specific progression|built-in binding (service contracts), combined with service groups and supervisor rings allow for application lifecycle changes in a controlled, well defined and standardized manner
+
