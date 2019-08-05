@@ -2,6 +2,15 @@
 
 Tool for Chef 15 upgrade and Effortless migration
 
+# story
+
+Upgrade and migration from any existing deployment or versions of chef to Chef 15 and Effortles pattern
+
+# Customer / Audience
+1. internal development to create the protype solution
+2. UAT env for demoing the solution to customers
+3. Should be able to also do ongoing UAT for effortless
+
 ## Example output from chef-server
 
 ```
