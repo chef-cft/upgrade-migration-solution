@@ -55,3 +55,122 @@ nil: {"nil"=>41, "redhat_7.2"=>5}
 ||`vault`|we recommend using an application specifically focused on secrets management|
 |**Application Orchestration**|combination of bespoke pipelines, `knife` commands, and other methods to get Chef Infra to converge changes in a specific progression|built-in binding (service contracts), combined with service groups and supervisor rings allow for application lifecycle changes in a controlled, well defined and standardized manner
 
+# UX Command Flow
+
+## Upgrade Migration Env Setup
+
+### things we need in the environment
+0. workstation
+1. chef-server
+  * cookbooks
+  * roles
+  * environments
+  * data_bags
+  * nodes
+2. bitbucket (git)
+
+### Commands we run to set up environment
+
+`terraform plan`
+`terraform apply`
+
+### Implementation
+
+1. terraform code for building at least one VM
+2. habitat package for application
+3.
+
+## Post Environment Setup
+
+### Cookbook Upgrade to Chef 15
+
+Pull down production cookbooks
+
+`knife download /cookbooks`
+
+Run cookstyle and other tooling on cookbooks to give assessment deprecations and chef-server ie search/databags use
+
+`cookstyle /path/to/cookbook`
+
+Confirm running of auto correct of Chef 15 deprecations based on assessment
+
+* need to correct on a branch
+
+`cookstyle -a .`
+
+`hab plan init`
+
+edit plan and add cookbook scaffold
+
+```
+pkg_name=cookbook
+pkg_origin=chef
+pkg_version="0.1.0"
+pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
+pkg_license=("Apache-2.0")
+pkg_upstream_url="http://chef.io"
+pkg_scaffolding="chef/scaffolding-chef-cookbook"
+```
+
+add pipeline description ie Jenkinsfile for build
+
+`Jenkinsfile`
+
+Push cookbook branch to source control
+
+`git push origin branchname`
+
+### Migration to Effortless
+
+download all relevant chef server information for the nodes and their configurations
+
+`knife download roles environments data_bags`
+
+run the migration accel tool?
+
+`chef migrate PATHTODOWNLOAD`
+
+What is the job the migrate tool is doing?
+1. filter data from chef-server
+2. analyze the data
+3. figure out what is 'widest group of uniqueness'
+4. naming (need a name for each new set of same nodes)
+5. mapping (somehow make sure we put the right package on the right node)
+
+To build a data structure that then can be mapped through a templatized habitat plan.
+
+This should output a set of habitat plans that can build packages to deliver same content to the correct nodes
+
+Example output:
+
+```
+pkg_name=chef=named-infra-policy
+pkg_origin=chef
+pkg_version="0.1.0"
+pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
+pkg_license=("Apache-2.0")
+pkg_upstream_url="http://chef.io"
+
+pkg_deps=(
+  chef/chef-client
+  chef/inspec-client
+  jmfamily/group-configuration
+  jmfamily/base-cookbook
+  jmfamily/app-one-cookbook
+  premium-chef/CIS-2
+)
+```
+Write out file for policy -> node mapping
+
+`chef migrate export policy-map`
+
+Add 'switchover cookbook' to the runlist of all our nodes
+
+1. add the switchover cookbook to all node runlists
+2. set attribute to false for `switchbook::do-switchover = false`
+
+Change chef attribute from false to true to trigger switchover
+
+`switchbook::do-switchover = true`
+
+3. run chef-client on all nodes
