@@ -1,0 +1,10 @@
+name: rhel_audit
+title: Audit to verify hardening remediation
+maintainer: Jeff Brimager
+copyright: Proprietary - All Rights Reserved
+copyright_email: jbrimager@chef.io
+license: Apache-2.0
+summary: An InSpec Compliance Profile
+version: 0.1.0
+supports:
+ - platform-name: centos

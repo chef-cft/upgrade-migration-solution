@@ -1,0 +1,14 @@
+## Below are example of common git excludes.
+## Please note that /cookbooks folder is ignored. This allows users to
+## clone individual cookbooks into the /cookbook folder of the chef repo
+## and work on them in parallel. This pattern also allows for chef-workstation
+## pattern, where base repo also builds out a dynamic chef workstation.
+## Examples of workstation cookbooks:
+##    https://github.com/mwrock/chef_workstation
+##    https://github.com/Nordstrom/chefdk_bootstrap
+
+
+##Chef
+.kitchen/
+.vagrant
+results/*

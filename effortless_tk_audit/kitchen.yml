@@ -1,0 +1,23 @@
+---
+driver:
+  name: vagrant
+  synced_folders:
+   - ["./", "/tmp/habitat"]
+
+provisioner:
+  name: shell
+  always_update_cookbooks: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: centos-7
+
+suites:
+  - name: audit
+    provisioner:
+      arguments: ["<%= ENV['HAB_ORIGIN'] %>", "audit_example"]
+    verifier:
+      inspec_tests:
+        - test/integration/default
