@@ -1,0 +1,107 @@
+# This is a default Chef Automate configuration file. You can run
+# 'chef-automate deploy' with this config file and it should
+# successfully create a new Chef Automate instance with default settings.
+
+[global.v1]
+  # The external fully qualified domain name.
+  # When the application is deployed you should be able to access 'https://<fqdn>/'
+  # to login.
+  fqdn = "${automate_fqdn}"
+
+  # TLS Certificates for External-Facing Services
+    # The following TLS certificate and RSA public key were
+    # automatically generated. The certificate is a self-signed
+    # certificate and will likely produce security warnings when you
+    # visit Chef Automate in your web browser. We recommend using a
+    # certificate signed by a certificate authority you trust.
+  [[global.v1.frontend_tls]]
+    # The TLS certificate for the load balancer frontend.
+    cert = """-----BEGIN CERTIFICATE-----
+MIID4jCCAsqgAwIBAgIRALksT2C6xRPHkU29L8XTp10wDQYJKoZIhvcNAQELBQAw
+cDELMAkGA1UEBhMCVVMxFjAUBgNVBAoTDUNoZWYgU29mdHdhcmUxFjAUBgNVBAsT
+DUNoZWYgQXV0b21hdGUxMTAvBgNVBAMTKGlwLTEwLTEtMC0xOTkudXMtd2VzdC0y
+LmNvbXB1dGUuaW50ZXJuYWwwHhcNMTkwOTEyMjEzMjE3WhcNMjkwOTA5MjEzMjE3
+WjBwMQswCQYDVQQGEwJVUzEWMBQGA1UEChMNQ2hlZiBTb2Z0d2FyZTEWMBQGA1UE
+CxMNQ2hlZiBBdXRvbWF0ZTExMC8GA1UEAxMoaXAtMTAtMS0wLTE5OS51cy13ZXN0
+LTIuY29tcHV0ZS5pbnRlcm5hbDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBANsQ1KyLLRF55LSi7YcJ4CMGF/gHqz8jUIH1JRl8de0WNtaskQtc3uJR1Nv7
+X5i3bEMsqG1FIDDR936oyNLOGjELiqS9ODzK1mOoAEidJwdshlyM5MSo5xiixgPE
++mt7Y81tWtsNG4rYxwggnCjByahZy7ovx12yEtzvNYrtWC0h5nEcjcUrdzyOx7T9
+raplT9JTFQO1eX9Cl5CIgmuyl46BGMMtfyTAMNIKvq6GIJB7dPAPHkGjfWM9DO+I
+e+OkeaV8XA8BwDZBhtevXIp6DE7WONLwhKpdZ4Wj5hkD+ZnvG8bSmU9lClypozmP
+EidsB6VejU7tVlpX1CUHUcimlzUCAwEAAaN3MHUwDgYDVR0PAQH/BAQDAgKkMB0G
+A1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAPBgNVHRMBAf8EBTADAQH/MDMG
+A1UdEQQsMCqCKGlwLTEwLTEtMC0xOTkudXMtd2VzdC0yLmNvbXB1dGUuaW50ZXJu
+YWwwDQYJKoZIhvcNAQELBQADggEBAJfvX+SPXTtr9M/7qhKioaF7tH39Sym3hHoM
+C7hgUcLimy/vqqmyOsJps3+ongDDqJx0jRXcOrbLp7FrTEyNFBL+t45FajCcL/jl
+/Xe4jPY5HqEe1ofa0mZmfaSHIWdTmN7Nh2Mq6k0T+mKkaCnPzpsLgwROlNb8EV12
+UmBI0esZMdb+NYP6N84MMmUwoSrz3zDAo3reR7R2PNNH0DadFYWKlH1s5+q10dNN
+FayfjOkR2YiknjNGRpnJXD5Rq3BWdFcQA9Lv5QAlTK5YyzLcPZRH5P8HV+1znoVD
+4J4Dy+ClmShaelQPot3eSDVp06V7WcIyv+R5Ubbde6VBmi9bEM0=
+-----END CERTIFICATE-----
+"""
+
+    # The TLS RSA key for the load balancer frontend.
+    key = """-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEA2xDUrIstEXnktKLthwngIwYX+AerPyNQgfUlGXx17RY21qyR
+C1ze4lHU2/tfmLdsQyyobUUgMNH3fqjI0s4aMQuKpL04PMrWY6gASJ0nB2yGXIzk
+xKjnGKLGA8T6a3tjzW1a2w0bitjHCCCcKMHJqFnLui/HXbIS3O81iu1YLSHmcRyN
+xSt3PI7HtP2tqmVP0lMVA7V5f0KXkIiCa7KXjoEYwy1/JMAw0gq+roYgkHt08A8e
+QaN9Yz0M74h746R5pXxcDwHANkGG169cinoMTtY40vCEql1nhaPmGQP5me8bxtKZ
+T2UKXKmjOY8SJ2wHpV6NTu1WWlfUJQdRyKaXNQIDAQABAoIBAEqmoKKvxsrmy94W
+i3TyE5Q71l0qV9vrL9spa9wUgqcpY8SiB8dkfXuIQU45iikjkFwP0tFxtfeNBZb+
+83iKzXgbI8LhzFFDGe3Z6UbVbuBjxiGxzZ+Koz3M8keEj4WjBa6SblypSdJ17tVB
+L5Xf+9VHzFoFQB4Yub7aMVfHa73s5w95zEv+s32VZavVsAM6TkyCkwCno6IiTumM
+7DWh0MFgv83WM4QWbHdnaDzYCdPdLHxf4ODHBqYQt36nP+3gqCeoUBqIB5YWPq1D
+7JJENH52q5b+HfbuYW5PSJRvWzOsw8QoJ2zlYZT9ZD0EQ5IAQg+bW0pIZd7agsF6
+8J2vowECgYEA7tYUfn0VXBpEwU8QCqgfJf1citFrgotL6JSg+9SD33RrbZedBr8s
+9Y2feOQbHacvkFoGqpWfpA0HsY4aiKh2rtVI3kHudnPdpJOuzaLGMMZhPMz5BpJv
+ZEphyO3pCG9gG4KAe94gT/g0LJMsttqoSDTZ6xxd22ccN+WboURPPXUCgYEA6s8H
+VCQvSMmIlhr38ZCX4Ebe9HFrQs4o5tsH411URFv0tfkSBPxEPA9nnr1V8keiwSL5
+5CBjFsbQusUupUJkzVfNJ1yIDxRizC6so/i9KwsQGWgOzApUsVgoziKcq993PrS5
++Sl0tMV4JKbEp8bqMYrX73MoQWdY5BXn2qWx+sECgYEAqFzjj5MvloCyDS9l2I1R
+f99N+FHOnvUBKtBzd3MFD2WrQVNKj3H/CI6wZ3EtqEat4e2Em4XkRqokzUamb8WJ
+/I8/0eXaa0gca6Lr6+weGE4QR+MafUaHHcTNj+4egyK4NkxVtHwOfTEz3mRVdgVH
+8bbIE9QoWb0jCEhk4FceIO0CgYBi4RfG+Q3oauXXwDeVRDyQt4eADJsMoOBchvQF
+bPHlb4vXbbGG4+ygFiSelkCxLDV/e4kb5f+UQdj4Lbz83r6wMj80SiUJpJ4OOcF9
+s2uFyrzW1hkVF2ye2e8lDzJGtm3yvAxsvmZlEZsMZCYAOSW6Ayv3q9jR4gFu20Kt
+soUGgQKBgBCxse1+HfkYl7KIBIAYFxDeFEHbP/PFWyoXtjN9Qngf59KqbVGuLFX7
+CrtFrOzb+IJEP/f79nOxQI2+41Ifmt9YQFX71FZ1F4QBHyiu2YN4psixGMMzS8BC
+243WSgTpt/TKXfPvgkOtWwKCbVxYHlp6bjsTSJL5kEDKdEDA6EER
+-----END RSA PRIVATE KEY-----
+"""
+
+[auth_n.v1.sys.service]
+  a1_data_collector_token = "${automate_dc_token}"
+
+# Deployment service configuration.
+[deployment.v1]
+  [deployment.v1.svc]
+    # Habitat channel to install hartifact from.
+    # Can be 'dev', 'current', or 'acceptance'
+    channel = "current"
+    upgrade_strategy = "at-once"
+    deployment_type = "local"
+    # Install the Chef Server API as well
+    products = ["automate", "chef-server"]
+
+    [deployment.v1.svc.admin_user]
+      # Default admin user settings
+      email = "${automate_admin_email}"
+      username = "${automate_admin_username}"
+      password = "${automate_admin_password}"
+
+# License Control service configuration.
+[license_control.v1]
+  [license_control.v1.svc]
+    # The Chef Software provided license token required to run Chef Automate.
+    # This can also be set with the "chef-automate license apply" command.
+    license = ""
+
+# Chef Automate services can be configured to better meet the needs of
+# your particular installation. For details see:
+#
+# https://automate.chef.io/docs/configuration/
+#
+[elasticsearch.v1.sys.runtime]
+heapsize = "2g"
