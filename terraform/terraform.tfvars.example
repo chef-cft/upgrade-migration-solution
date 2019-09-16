@@ -1,0 +1,11 @@
+aws_profile = "default"
+aws_region = "us-west-2"
+aws_ssh_key_file = "~/.ssh/id_rsa"
+aws_ssh_key_pair_name = "mykey"
+automate_lb_certificate_arn = "arn:aws:acm:us-west-2:446539779517:certificate/e98235a7-ba3d-4900-9c55-4b35bb8b56c7"
+
+tag_contact = "myemail@chef.io"
+tag_dept = "IT"
+tag_project = "Effortless"
+
+automate_admin_password = "SuperSecurePassword42"
