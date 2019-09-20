@@ -73,6 +73,11 @@ resource "random_shuffle" "rand_subnet" {
 # TODO
 # - self-repairing alarm
 # - install Automate
+resource "random_string" "automate_admin_password" {
+  length = 40
+  special = true
+}
+
 data "template_file" "automate-config" {
   template = file("${path.module}/templates/automate-config.toml")
 
@@ -80,7 +85,7 @@ data "template_file" "automate-config" {
     automate_fqdn             = coalesce(var.automate_fqdn, aws_alb.automate_lb.dns_name)
     automate_admin_email      = var.automate_admin_email
     automate_admin_username   = var.automate_admin_username
-    automate_admin_password   = var.automate_admin_password
+    automate_admin_password   = random_string.automate_admin_password.result
     automate_dc_token         = var.automate_dc_token
   }
 }
@@ -89,7 +94,7 @@ data "template_file" "automate-install" {
   template = file("${path.module}/templates/automate-install.sh")
 
   vars = {
-    automate_admin_password = var.automate_admin_password
+    automate_admin_password = random_string.automate_admin_password.result
   }
 }
 

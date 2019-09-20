@@ -6,13 +6,9 @@ variable automate_admin_email {
   default = "admin@chef.io"
 }
 
-variable automate_admin_password {}
-
 variable automate_dc_token {
   default = "93a49a4f2482c64126f7b6015e6b0f30284287ee4054ff8807fb63d9cbd1c506"
 }
-
-variable "automate_lb_certificate_arn" {}
 
 variable "automate_fqdn" {
   default = ""
@@ -49,7 +45,7 @@ variable "tag_dept" {
 }
 
 variable "tag_name" {
-  default = "A2"
+  default = "Migration"
 }
 
 variable "tag_project" {

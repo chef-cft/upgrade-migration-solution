@@ -14,6 +14,13 @@ resource "aws_alb" "automate_lb" {
   }
 }
 
+data "aws_acm_certificate" "automate_lb" {
+  domain      = "success.chef.co"
+  types       = ["AMAZON_ISSUED"]
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
+
 resource "aws_alb_target_group" "automate_tg" {
   name     = "${var.tag_name}-${random_id.random.hex}-automate-tg"
   port     = 443
@@ -32,7 +39,7 @@ resource "aws_alb_listener" "automate_lb_listener_443" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn   = var.automate_lb_certificate_arn
+  certificate_arn   = data.aws_acm_certificate.automate_lb.arn
 
   default_action {
     type             = "forward"
