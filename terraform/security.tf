@@ -1,10 +1,10 @@
 resource "aws_security_group" "base_linux" {
-  name        = "base_linux_${random_id.random.hex}"
+  name        = "base_linux_${random_string.customer_id.result}"
   description = "base security rules for all linux nodes"
   vpc_id      = aws_vpc.default.id
 
   tags = {
-    Name      = "${var.tag_dept}-${var.tag_project}_${random_id.random.hex}_security_group"
+    Name      = "${var.tag_dept}-${var.tag_project}_${random_string.customer_id.result}_security_group"
     X-Dept    = var.tag_dept
     X-Project = var.tag_project
     X-Contact = var.tag_contact
@@ -12,12 +12,12 @@ resource "aws_security_group" "base_linux" {
 }
 
 resource "aws_security_group" "chef_automate" {
-  name        = "chef_automate_${random_id.random.hex}"
+  name        = "chef_automate_${random_string.customer_id.result}"
   description = "Chef Automate Server"
   vpc_id      = aws_vpc.default.id
 
   tags = {
-    Name      = "${var.tag_dept}-${var.tag_project}_${random_id.random.hex}_security_group"
+    Name      = "${var.tag_dept}-${var.tag_project}_${random_string.customer_id.result}_security_group"
     X-Dept    = var.tag_dept
     X-Project = var.tag_project
     X-Contact = var.tag_contact

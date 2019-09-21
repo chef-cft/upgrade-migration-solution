@@ -4,8 +4,10 @@ provider "aws" {
   shared_credentials_file = "~/.aws/credentials"
 }
 
-resource "random_id" "random" {
-  byte_length = 4
+resource "random_string" "customer_id" {
+  length = 4
+  special = false
+  upper = false
 }
 
 data "aws_ami" "centos" {
@@ -29,16 +31,15 @@ data "aws_availability_zones" "available" {
 
 resource "aws_vpc" "default" {
   cidr_block = "10.1.0.0/16"
-
+  
   tags = {
-    Name      = "${var.tag_name}_${random_id.random.hex}_vpc"
+    Name      = "${var.tag_name}_${random_string.customer_id.result}_vpc"
     X-Dept    = var.tag_dept
     X-Project = var.tag_project
     X-Contact = var.tag_contact
   }
-
-  enable_classiclink_dns_support = true
-  enable_dns_hostnames           = true
+  
+  enable_dns_hostnames = true
 }
 
 resource "aws_internet_gateway" "default" {
@@ -59,7 +60,7 @@ resource "aws_subnet" "default" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name      = "${var.tag_name}_${random_id.random.hex}_${data.aws_availability_zones.available.names[count.index]}"
+    Name      = "${var.tag_name}_${random_string.customer_id.result}_${data.aws_availability_zones.available.names[count.index]}"
     X-Dept    = var.tag_dept
     X-Project = var.tag_project
     X-Contact = var.tag_contact
@@ -82,7 +83,7 @@ data "template_file" "automate-config" {
   template = file("${path.module}/templates/automate-config.toml")
 
   vars = {
-    automate_fqdn             = coalesce(var.automate_fqdn, aws_alb.automate_lb.dns_name)
+    automate_fqdn             = "${var.tag_name}-${random_string.customer_id.result}.${var.domain_name}"
     automate_admin_email      = var.automate_admin_email
     automate_admin_username   = var.automate_admin_username
     automate_admin_password   = random_string.automate_admin_password.result
@@ -96,6 +97,10 @@ data "template_file" "automate-install" {
   vars = {
     automate_admin_password = random_string.automate_admin_password.result
   }
+}
+
+resource "tls_private_key" "chef-infra-validator" {
+  algorithm   = "RSA"
 }
 
 resource "aws_instance" "chef_automate" {
@@ -128,7 +133,7 @@ resource "aws_instance" "chef_automate" {
   }
 
   tags = {
-    Name      = "${var.tag_name}-${random_id.random.hex}-automate"
+    Name      = "${var.tag_name}-${random_string.customer_id.result}-automate"
     X-Dept    = var.tag_dept
     X-Project = var.tag_project
     X-Contact = var.tag_contact
@@ -161,5 +166,17 @@ resource "aws_instance" "chef_automate" {
       "sudo bash -ex /tmp/automate-install.sh",
     ]
   }
-}
 
+  provisioner "file" {
+    content     = tls_private_key.chef-infra-validator.public_key_pem
+    destination = "/tmp/validator.pem.pub"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo /bin/chef-server-ctl user-create chef_infra_admin migration admin nobody@chef.io $(/bin/openssl rand -base64 12) -f /etc/chef-automate/chef_infra_admin.pem",
+      "sudo /bin/chef-server-ctl org-create migration migration -a chef_infra_admin -f /etc/chef-automate/migration-validator.pem",
+      "sudo /bin/chef-server-ctl add-client-key migration migration-validator -p /tmp/validator.pem.pub -k tf"
+    ]
+  }
+}

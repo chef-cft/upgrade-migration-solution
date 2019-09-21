@@ -1,5 +1,5 @@
 output "automate_fqdn" {
-  value = var.automate_fqdn != "" ? var.automate_fqdn : aws_alb.automate_lb.dns_name
+  value = "${var.tag_name}-${random_string.customer_id.result}.${var.domain_name}"
 }
 
 output "automate_admin_password" {
@@ -13,4 +13,8 @@ output "automate_ssh" {
     var.aws_ssh_user,
     aws_instance.chef_automate.*.public_ip,
   )
+}
+
+output "validation_pem" {
+  value = tls_private_key.chef-infra-validator.private_key_pem
 }

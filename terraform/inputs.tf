@@ -10,10 +10,6 @@ variable automate_dc_token {
   default = "93a49a4f2482c64126f7b6015e6b0f30284287ee4054ff8807fb63d9cbd1c506"
 }
 
-variable "automate_fqdn" {
-  default = ""
-}
-
 variable "automate_server_instance_type" {
   default = "m5.large"
 }
@@ -45,9 +41,11 @@ variable "tag_dept" {
 }
 
 variable "tag_name" {
-  default = "Migration"
+  default = "migration"
 }
 
 variable "tag_project" {
 }
 
+variable "domain_name" {
+}
