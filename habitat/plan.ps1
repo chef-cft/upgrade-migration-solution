@@ -11,4 +11,4 @@ $pkg_deps=@(
 )
 $pkg_scaffolding="migration/scaffolding-chef-infra"
 $scaffold_policy_name="Policyfile"
-$scaffold_policyfiles_path="$PLAN_CONTEXT\..\fingerprinter\"
+$scaffold_policyfile_path="$PLAN_CONTEXT\..\fingerprinter\"
