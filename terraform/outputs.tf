@@ -14,7 +14,14 @@ output "automate_ssh" {
     aws_instance.chef_automate.*.public_ip,
   )
 }
+output "windows_client_password" {
+  value = "${rsadecrypt(aws_instance.windows_client.password_data,file(var.aws_ssh_key_file))}"
+}
 
-output "validation_pem" {
-  value = tls_private_key.chef-infra-validator.private_key_pem
+output "LINUX_curl-bash" {
+  value = "curl https://raw.githubusercontent.com/stephenlauck/chef-repo/master/bootstrap.sh | sudo bash -s ${random_string.customer_id.result} ${data.local_file.chef-automate-token.content}"
+}
+
+output "WINDOWS_Invoke-Command" {
+  value = "Invoke-Command -ScriptBlock ([scriptBlock]::Create((New-Object System.Net.WebClient).DownloadString(' https://raw.githubusercontent.com/stephenlauck/chef-repo/master/bootstrap.ps1'))) -ArgumentList '${random_string.customer_id.result}','${data.local_file.chef-automate-token.content}'"
 }

@@ -10,7 +10,7 @@ resource "random_string" "customer_id" {
   upper = false
 }
 
-data "aws_ami" "centos" {
+data "aws_ami" "automate" {
   most_recent = true
 
   filter {
@@ -38,7 +38,7 @@ resource "aws_vpc" "default" {
     X-Project = var.tag_project
     X-Contact = var.tag_contact
   }
-  
+
   enable_dns_hostnames = true
 }
 
@@ -71,9 +71,6 @@ resource "random_shuffle" "rand_subnet" {
   input = aws_subnet.default.*.id
 }
 
-# TODO
-# - self-repairing alarm
-# - install Automate
 resource "random_string" "automate_admin_password" {
   length = 40
   special = true
@@ -87,20 +84,7 @@ data "template_file" "automate-config" {
     automate_admin_email      = var.automate_admin_email
     automate_admin_username   = var.automate_admin_username
     automate_admin_password   = random_string.automate_admin_password.result
-    automate_dc_token         = var.automate_dc_token
   }
-}
-
-data "template_file" "automate-install" {
-  template = file("${path.module}/templates/automate-install.sh")
-
-  vars = {
-    automate_admin_password = random_string.automate_admin_password.result
-  }
-}
-
-resource "tls_private_key" "chef-infra-validator" {
-  algorithm   = "RSA"
 }
 
 resource "aws_instance" "chef_automate" {
@@ -111,7 +95,7 @@ resource "aws_instance" "chef_automate" {
     private_key = file(var.aws_ssh_key_file)
   }
 
-  ami                         = data.aws_ami.centos.id
+  ami                         = data.aws_ami.automate.id
   instance_type               = var.automate_server_instance_type
   key_name                    = var.aws_ssh_key_pair_name
   subnet_id                   = element(aws_subnet.default.*.id, 0)
@@ -146,37 +130,69 @@ resource "aws_instance" "chef_automate" {
   }
 
   provisioner "file" {
-    content      = data.template_file.automate-config.rendered
+    content = templatefile("${path.module}/templates/automate-config.toml",
+    {
+      automate_fqdn             = "${var.tag_name}-${random_string.customer_id.result}.${var.domain_name}"
+      automate_admin_email      = var.automate_admin_email
+      automate_admin_username   = var.automate_admin_username
+      automate_admin_password   = random_string.automate_admin_password.result
+    })
     destination = "/tmp/automate-config.toml"
   }
 
   provisioner "file" {
-    content      = data.template_file.automate-install.rendered
+    content  = templatefile("${path.module}/templates/automate-install.sh",
+    {
+      automate_admin_password = random_string.automate_admin_password.result
+    })
     destination = "/tmp/automate-install.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
       "sudo bash -ex /tmp/mount_data_volume.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = [
       "sudo bash -ex /tmp/automate-install.sh",
-    ]
-  }
-
-  provisioner "file" {
-    content     = tls_private_key.chef-infra-validator.public_key_pem
-    destination = "/tmp/validator.pem.pub"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
       "sudo /bin/chef-server-ctl user-create chef_infra_admin migration admin nobody@chef.io $(/bin/openssl rand -base64 12) -f /etc/chef-automate/chef_infra_admin.pem",
       "sudo /bin/chef-server-ctl org-create migration migration -a chef_infra_admin -f /etc/chef-automate/migration-validator.pem",
-      "sudo /bin/chef-server-ctl add-client-key migration migration-validator -p /tmp/validator.pem.pub -k tf"
+      "sudo /bin/chef-automate iam token create datacollector | sudo tee /etc/chef-automate/dc.tok"
     ]
+  }
+}
+
+resource "null_resource" "chef-automate-token" {
+  provisioner "local-exec" {
+    command = "scp -i ${var.aws_ssh_key_file} ${var.aws_ssh_user}@${aws_instance.chef_automate.public_ip}:/etc/chef-automate/dc.tok /tmp/chef-automate-dc.tok"
+  }
+  depends_on = [aws_instance.chef_automate]
+}
+
+data "local_file" "chef-automate-token" {
+  filename = "/tmp/chef-automate-dc.tok"
+  depends_on = [null_resource.chef-automate-token]
+}
+
+# windows ami: ami-053cea4575d27b5d6
+# rhel 8: ami-0520e698dd500b1d1
+
+resource "aws_instance" "windows_client" {
+  ami                         = "ami-053cea4575d27b5d6"
+  instance_type               = "t2.medium"
+  key_name                    = var.aws_ssh_key_pair_name
+  subnet_id                   = element(aws_subnet.default.*.id, 0)
+  vpc_security_group_ids      = [aws_security_group.base_windows.id]
+  associate_public_ip_address = true
+  get_password_data           = true
+
+  root_block_device {
+    delete_on_termination = true
+    volume_size           = 30
+    volume_type           = "gp2"
+  }
+
+  tags = {
+    Name      = "${var.tag_name}-${random_string.customer_id.result}-automate"
+    X-Dept    = var.tag_dept
+    X-Project = var.tag_project
+    X-Contact = var.tag_contact
   }
 }

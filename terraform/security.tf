@@ -11,6 +11,19 @@ resource "aws_security_group" "base_linux" {
   }
 }
 
+resource "aws_security_group" "base_windows" {
+  name        = "base_windows_${random_string.customer_id.result}"
+  description = "base security rules for all windows nodes"
+  vpc_id      = aws_vpc.default.id
+
+  tags = {
+    Name      = "${var.tag_dept}-${var.tag_project}_${random_string.customer_id.result}_security_group"
+    X-Dept    = var.tag_dept
+    X-Project = var.tag_project
+    X-Contact = var.tag_contact
+  }
+}
+
 resource "aws_security_group" "chef_automate" {
   name        = "chef_automate_${random_string.customer_id.result}"
   description = "Chef Automate Server"
@@ -33,6 +46,17 @@ resource "aws_security_group_rule" "ingress_allow_22_tcp_all" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.base_linux.id
+}
+
+//////////////////////////
+// Base Windows Rules
+resource "aws_security_group_rule" "ingress_allow_3389_tcp_all" {
+  type              = "ingress"
+  from_port         = 3389
+  to_port           = 3389
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.base_windows.id
 }
 
 ////////////////////////////////
