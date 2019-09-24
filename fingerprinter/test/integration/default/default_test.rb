@@ -1,4 +1,4 @@
-# InSpec test for recipe fingerprint::default
+# InSpec test for recipe fingerprinter::default
 
 # The InSpec reference, with examples and extensive documentation, can be
 # found at https://www.inspec.io/docs/reference/resources/
