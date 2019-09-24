@@ -47,4 +47,4 @@ Write-Output "Found $pkg_prefix"
 Write-Output "Running chef for $pkg_origin/$pkg_name"
 
 cd $pkg_prefix
-hab pkg exec $pkg_origin/$pkg_name chef-client.bat -z -c $pkg_prefix/config/bootstrap-config.rb
+hab pkg exec $pkg_origin/$pkg_name chef-client.bat -z -c $pkg_prefix/config/bootstrap-config.rb --chef_license accept
