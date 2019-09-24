@@ -12,7 +12,7 @@ hab_package 'migration/fingerprinter'
 
 directory 'C:/hab/svc/windows-service' do
   recursive true
-  only_if platform?('windows')
+  only_if { platform?('windows') }
 end
 
 hab_sup 'default' do
