@@ -7,4 +7,4 @@ pkg_upstream_url="http://chef.io"
 pkg_scaffolding="migration/scaffolding-chef-infra"
 pkg_svc_user=("root")
 scaffold_policy_name="Policyfile"
-scaffold_policyfile_path="../fingerprinter/"
+scaffold_policyfile_path="${PLAN_CONTEXT}/../fingerprinter/"
