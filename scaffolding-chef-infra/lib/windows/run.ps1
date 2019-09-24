@@ -34,7 +34,7 @@ if(!$env:CFG_CHEF_LICENSE){
 if($env:CFG_CHEF_LICENSE -eq "undefined"){
     $env:CFG_CHEF_LICENSE_CMD = ""
 } else {
-    $env:CFG_CHEF_LICENSE_CMD = "--chef-license '$env:CFG_CHEF_LICENSE'"
+    $env:CFG_CHEF_LICENSE_CMD = "--chef_license '$env:CFG_CHEF_LICENSE'"
 }
 
 function Invoke-ChefClient {
