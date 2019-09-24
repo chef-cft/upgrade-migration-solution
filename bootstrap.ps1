@@ -19,7 +19,7 @@ hab pkg install $pkg_origin/$pkg_name
 Write-Output "Creating configuration overrides"
 New-Item "C:\hab\user\fingerprinter\config" -ItemType Directory
 Set-Content -Path "C:\hab\user\fingerprinter\config\user.toml" -Value @"
-env_path_prefix = ";C:/WINDOWS;C:/WINDOWS/system32/;C:/WINDOWS/system32/WindowsPowerShell/v1.0;C:/ProgramData/chocolatey/bin;C:/Habitat/"
+env_path_prefix = ";C:/WINDOWS;C:/WINDOWS/system32/;C:/WINDOWS/system32/WindowsPowerShell/v1.0;C:/ProgramData/chocolatey/bin;C:/Habitat/;C:/ProgramData/Habitat"
 
 [chef_license]
 acceptance = "accept"
