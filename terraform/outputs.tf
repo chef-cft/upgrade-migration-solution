@@ -23,5 +23,5 @@ output "LINUX_curl-bash" {
 }
 
 output "WINDOWS_Invoke-Command" {
-  value = "Invoke-Command -ScriptBlock ([scriptBlock]::Create((New-Object System.Net.WebClient).DownloadString(' https://raw.githubusercontent.com/stephenlauck/chef-repo/master/bootstrap.ps1'))) -ArgumentList '${random_string.customer_id.result}','${data.local_file.chef-automate-token.content}'"
+  value = "Invoke-Command -ScriptBlock ([scriptBlock]::Create((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/stephenlauck/chef-repo/master/bootstrap.ps1'))) -ArgumentList '${random_string.customer_id.result}','${data.local_file.chef-automate-token.content}'"
 }

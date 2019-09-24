@@ -7,8 +7,8 @@ $pkg_upstream_url="http://chef.io"
 $pkg_build_deps=@("core/chef-dk")
 $pkg_deps=@(
   "core/cacerts"
-  "stuartpreston/chef-client" # https://github.com/habitat-sh/habitat/issues/6671
+  "robbkidd/chef-infra-client"
 )
-$pkg_scaffolding="chef/scaffolding-chef-infra"
+$pkg_scaffolding="migration/scaffolding-chef-infra"
 $scaffold_policy_name="Policyfile"
-$scaffold_policyfiles_path="../fingerprinter/"
+$scaffold_policyfiles_path="$PLAN_CONTEXT\..\fingerprinter\"

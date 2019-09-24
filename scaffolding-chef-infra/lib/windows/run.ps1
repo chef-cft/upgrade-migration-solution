@@ -38,7 +38,7 @@ if($env:CFG_CHEF_LICENSE -eq "undefined"){
 }
 
 function Invoke-ChefClient {
-  {{pkgPathFor "scaffold_chef_client"}}/bin/chef-client.bat -z -l $env:CFG_LOG_LEVEL -c {{pkg.svc_config_path}}/client-config.rb -j {{pkg.svc_config_path}}/attributes.json --once --no-fork --run-lock-timeout $env:CFG_RUN_LOCK_TIMEOUT $env:CFG_CHEF_LICENSE_CMD
+  {{pkgPathFor "$scaffold_chef_client"}}/bin/chef-client.bat -z -l $env:CFG_LOG_LEVEL -c {{pkg.svc_config_path}}/client-config.rb -j {{pkg.svc_config_path}}/attributes.json --once --no-fork --run-lock-timeout $env:CFG_RUN_LOCK_TIMEOUT $env:CFG_CHEF_LICENSE_CMD
 }
 
 $SPLAY_DURATION = Get-Random -InputObject (0..$env:CFG_SPLAY) -Count 1
