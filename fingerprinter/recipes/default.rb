@@ -14,6 +14,11 @@ hab_sup 'default' do
   license 'accept'
 end
 
+directory 'C:/hab/svc/windows-service' do
+  recursive true
+  only_if platform?('windows')
+end
+
 hab_service 'migration/fingerprinter' do
   strategy 'at-once'
   topology 'standalone'
