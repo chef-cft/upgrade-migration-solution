@@ -76,17 +76,6 @@ resource "random_string" "automate_admin_password" {
   special = true
 }
 
-data "template_file" "automate-config" {
-  template = file("${path.module}/templates/automate-config.toml")
-
-  vars = {
-    automate_fqdn             = "${var.tag_name}-${random_string.customer_id.result}.${var.domain_name}"
-    automate_admin_email      = var.automate_admin_email
-    automate_admin_username   = var.automate_admin_username
-    automate_admin_password   = random_string.automate_admin_password.result
-  }
-}
-
 resource "aws_instance" "chef_automate" {
   connection {
     host        = coalesce(self.public_ip, self.private_ip)
