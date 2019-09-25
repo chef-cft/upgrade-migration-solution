@@ -71,9 +71,6 @@ CrtFrOzb+IJEP/f79nOxQI2+41Ifmt9YQFX71FZ1F4QBHyiu2YN4psixGMMzS8BC
 -----END RSA PRIVATE KEY-----
 """
 
-[auth_n.v1.sys.service]
-  a1_data_collector_token = "${automate_dc_token}"
-
 # Deployment service configuration.
 [deployment.v1]
   [deployment.v1.svc]
